@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Garena Free Fire Team</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background: #0a0a0a;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            color: #fff;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            overflow-x: hidden;
+            -webkit-user-select: none;
+            user-select: none;
+        }
+
+        /* Header */
+        .header {
+            width: 100%;
+            background: linear-gradient(180deg, #4fc3f7 0%, #29b6f6 100%);
+            padding: 14px 0;
+            text-align: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header h1 {
+            font-size: 20px;
+            font-weight: 700;
+            color: #fff;
+            letter-spacing: 0.5px;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+        }
+
+        /* Main Content */
+        .container {
+            width: 100%;
+            max-width: 480px;
+            padding: 20px 16px 40px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 24px;
+        }
+
+        /* Watch Full Video Section */
+        .video-section {
+            width: 100%;
+            text-align: center;
+        }
+
+        .watch-title {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+
+        .watch-title span {
+            font-size: 26px;
+            font-weight: 900;
+            color: #ff0000;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            text-shadow: 0 0 10px rgba(255,0,0,0.5);
+        }
+
+        .finger {
+            font-size: 28px;
+        }
+
+        /* Video Player */
+        .video-wrapper {
+            width: 100%;
+            border-radius: 16px;
+            overflow: hidden;
+            border: 3px solid;
+            border-image: linear-gradient(90deg, #00e5ff, #2979ff, #7c4dff) 1;
+            box-shadow: 0 0 20px rgba(41, 121, 255, 0.4);
+            background: #111;
+            position: relative;
+        }
+
+        video {
+            width: 100%;
+            display: block;
+            background: #000;
+            aspect-ratio: 16/9;
+            outline: none;
+        }
+
+        /* Hide download button & extra controls as much as possible */
+        video::-webkit-media-controls {
+            overflow: hidden !important;
+        }
+        video::-webkit-media-controls-enclosure {
+            overflow: hidden !important;
+        }
+        video::-internal-media-controls-download-button {
+            display: none !important;
+        }
+        video::-webkit-media-controls-download-button {
+            display: none !important;
+        }
+
+        /* Big play button overlay */
+        .play-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.45);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 10;
+            transition: opacity 0.3s;
+        }
+
+        .play-overlay.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .play-btn {
+            width: 70px;
+            height: 70px;
+            background: rgba(255,255,255,0.95);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+        }
+
+        .play-btn::after {
+            content: '';
+            display: block;
+            width: 0;
+            height: 0;
+            border-left: 22px solid #111;
+            border-top: 14px solid transparent;
+            border-bottom: 14px solid transparent;
+            margin-left: 5px;
+        }
+
+        /* Download Card */
+        .download-card {
+            width: 100%;
+            background: #1a1a1a;
+            border-radius: 20px;
+            padding: 20px;
+            border: 1px solid #333;
+            box-shadow: 0 0 30px rgba(255,255,255,0.05), inset 0 0 20px rgba(255,255,255,0.02);
+            position: relative;
+        }
+
+        .download-card::before {
+            content: '';
+            position: absolute;
+            inset: -1px;
+            border-radius: 21px;
+            padding: 1px;
+            background: linear-gradient(135deg, #444, #222);
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            pointer-events: none;
+        }
+
+        .app-info {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin-bottom: 18px;
+        }
+
+        .app-icon {
+            width: 72px;
+            height: 72px;
+            border-radius: 16px;
+            overflow: hidden;
+            flex-shrink: 0;
+            background: #222;
+            position: relative;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+        }
+
+        .app-icon img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .app-icon .new-badge {
+            position: absolute;
+            top: 4px;
+            left: 4px;
+            background: #e53935;
+            color: #fff;
+            font-size: 9px;
+            font-weight: 700;
+            padding: 2px 5px;
+            border-radius: 4px;
+            text-transform: uppercase;
+        }
+
+        .app-details {
+            flex: 1;
+        }
+
+        .badges {
+            display: flex;
+            gap: 6px;
+            margin-bottom: 6px;
+        }
+
+        .badge {
+            font-size: 11px;
+            font-weight: 700;
+            padding: 3px 8px;
+            border-radius: 20px;
+            text-transform: uppercase;
+        }
+
+        .badge-new {
+            background: #e53935;
+            color: #fff;
+        }
+
+        .badge-premium {
+            background: linear-gradient(90deg, #7c4dff, #651fff);
+            color: #fff;
+        }
+
+        .app-title {
+            font-size: 18px;
+            font-weight: 800;
+            color: #fff;
+            line-height: 1.2;
+            margin-bottom: 2px;
+        }
+
+        .app-subtitle {
+            font-size: 13px;
+            color: #aaa;
+            margin-bottom: 6px;
+        }
+
+        .stars {
+            color: #ffc107;
+            font-size: 14px;
+            letter-spacing: 1px;
+        }
+
+        /* Download Button */
+        .download-btn {
+            display: block;
+            width: 100%;
+            background: linear-gradient(180deg, #00e676 0%, #00c853 100%);
+            color: #fff;
+            font-size: 18px;
+            font-weight: 800;
+            text-align: center;
+            padding: 16px;
+            border-radius: 50px;
+            text-decoration: none;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 6px 20px rgba(0, 230, 118, 0.4);
+            transition: transform 0.15s, box-shadow 0.15s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .download-btn:active {
+            transform: scale(0.97);
+            box-shadow: 0 3px 10px rgba(0, 230, 118, 0.3);
+        }
+
+        .note {
+            font-size: 12px;
+            color: #666;
+            text-align: center;
+            margin-top: 10px;
+            line-height: 1.4;
+        }
+
+        @media (max-width: 380px) {
+            .watch-title span {
+                font-size: 22px;
+            }
+            .app-title {
+                font-size: 16px;
+            }
+            .app-icon {
+                width: 64px;
+                height: 64px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div class="header">
+        <h1>Garena Free Fire Team</h1>
+    </div>
+
+    <div class="container">
+        <!-- Video Section -->
+        <div class="video-section">
+            <div class="watch-title">
+                <span class="finger">👇</span>
+                <span>WATCH FULL VIDEO</span>
+                <span class="finger">👇</span>
+            </div>
+
+            <div class="video-wrapper" id="videoWrapper">
+                <!-- 
+                    controlsList="nodownload noplaybackrate" → Download button hide karta hai
+                    disablePictureInPicture → PiP band
+                -->
+                <video 
+                    id="mainVideo" 
+                    playsinline 
+                    webkit-playsinline
+                    controls
+                    controlsList="nodownload noplaybackrate noremoteplayback"
+                    disablePictureInPicture
+                    oncontextmenu="return false;"
+                    preload="metadata">
+                    <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+
+                <!-- Custom Play Button (sound ke saath play karne ke liye) -->
+                <div class="play-overlay" id="playOverlay">
+                    <div class="play-btn"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Download Card -->
+        <div class="download-card">
+            <div class="app-info">
+                <div class="app-icon">
+                    <img src="https://cdn-icons-png.flaticon.com/512/871/871396.png" alt="App Icon" id="appIcon">
+                    <span class="new-badge">NEW</span>
+                </div>
+                <div class="app-details">
+                    <div class="badges">
+                        <span class="badge badge-new">NEW</span>
+                        <span class="badge badge-premium">PREMIUM</span>
+                    </div>
+                    <div class="app-title" id="appTitle">OB55 PROXY SERVER</div>
+                    <div class="app-subtitle" id="appSubtitle">free fire proxy server</div>
+                    <div class="stars">★★★★★</div>
+                </div>
+            </div>
+
+            <a href="https://example.com/download" class="download-btn" id="downloadBtn" target="_blank">
+                DOWNLOAD
+            </a>
+        </div>
+
+        <p class="note">
+            Video dekhne ke baad DOWNLOAD button dabaye<br>
+            Safe & Fast Download
+        </p>
+    </div>
+
+    <script>
+        // ============================================
+        // YAHAN SE AAP SAB KUCH CHANGE KAR SAKTE HO
+        // ============================================
+
+        const VIDEO_URL = "https://www.w3schools.com/html/mov_bbb.mp4";
+        const DOWNLOAD_LINK = "https://example.com/your-file.apk";
+        const APP_TITLE = "OB55 PROXY SERVER";
+        const APP_SUBTITLE = "free fire proxy server";
+        const APP_ICON = "https://cdn-icons-png.flaticon.com/512/871/871396.png";
+
+        // Apply changes
+        const video = document.getElementById('mainVideo');
+        video.querySelector('source').src = VIDEO_URL;
+        video.load();
+
+        document.getElementById('downloadBtn').href = DOWNLOAD_LINK;
+        document.getElementById('appTitle').textContent = APP_TITLE;
+        document.getElementById('appSubtitle').textContent = APP_SUBTITLE;
+        document.getElementById('appIcon').src = APP_ICON;
+
+        // ============================================
+        // PROTECTION + SOUND PLAY
+        // ============================================
+
+        const playOverlay = document.getElementById('playOverlay');
+
+        // Play button click → video + sound dono start
+        playOverlay.addEventListener('click', function() {
+            video.muted = false;          // Sound ON
+            video.volume = 1.0;
+            video.play().then(() => {
+                playOverlay.classList.add('hidden');
+            }).catch((err) => {
+                console.log("Play error:", err);
+            });
+        });
+
+        // Jab video pause ho to overlay wapas dikhao
+        video.addEventListener('pause', function() {
+            if (!video.ended) {
+                playOverlay.classList.remove('hidden');
+            }
+        });
+
+        // Video end hone pe overlay dikhao
+        video.addEventListener('ended', function() {
+            playOverlay.classList.remove('hidden');
+        });
+
+        // Right click band
+        document.addEventListener('contextmenu', function(e) {
+            e.preventDefault();
+            return false;
+        });
+
+        // Video pe right click / long press band
+        video.addEventListener('contextmenu', function(e) {
+            e.preventDefault();
+            return false;
+        });
+
+        // Keyboard shortcuts band (Save, Inspect etc.)
+        document.addEventListener('keydown', function(e) {
+            // Ctrl+S, Ctrl+U, Ctrl+Shift+I, F12, Ctrl+P etc.
+            if (
+                (e.ctrlKey && (e.key === 's' || e.key === 'S' || e.key === 'u' || e.key === 'U' || e.key === 'p' || e.key === 'P')) ||
+                (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'i' || e.key === 'J' || e.key === 'j' || e.key === 'C' || e.key === 'c')) ||
+                e.key === 'F12'
+            ) {
+                e.preventDefault();
+                return false;
+            }
+        });
+
+        // Drag band
+        document.addEventListener('dragstart', function(e) {
+            e.preventDefault();
+            return false;
+        });
+
+        // Extra: try to detect some screen capture (limited effect)
+        // Full screen recording rokna possible nahi hai 100%, lekin thoda mushkil zaroor banate hain
+        document.addEventListener('visibilitychange', function() {
+            if (document.hidden) {
+                video.pause();
+            }
+        });
+    </script>
+</body>
+</html>
